@@ -1,0 +1,42 @@
+{
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "Ubuntu",
+      "iso_url": "http://releases.ubuntu.com/16.10/ubuntu-16.10-server-i386.iso",
+      "iso_checksum": "0e52cc7c7c4cc9e91f4e984c1232192394c6caf8e7170c1aeefb37bdef1f0625",
+      "iso_checksum_type": "sha256",
+      "disk_size": 8000,
+      "http_directory": ".",
+      "boot_wait": "4s",
+      "boot_command": [
+        "<esc>",
+        "<esc>",
+        "<enter>",
+        "/install/vmlinuz ",
+        "vga=788 ",
+        "ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/ks.cfg ",
+        "initrd=/install/initrd.gz --- <enter>"
+      ],
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "shutdown_command": "sudo /sbin/shutdown -h now"
+    }
+  ],
+  "description": "Build ubuntu i386 virtualbox image",
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo apt-get -y update && sudo apt-get -y upgrade",
+        "sudo apt-get install build-essential"
+        ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "compression_level": 9
+    }
+  ]
+}
