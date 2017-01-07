@@ -20,16 +20,31 @@
       ],
       "ssh_username": "vagrant",
       "ssh_password": "vagrant",
+      "ssh_wait_timeout": "1000s",
       "shutdown_command": "sudo /sbin/shutdown -h now"
     }
   ],
   "description": "Build ubuntu i386 virtualbox image",
   "provisioners": [
     {
+      "type": "file",
+      "source": "vagrant-insecure.pub",
+      "destination": "/home/vagrant/vagrant-insecure.pub"
+    },
+    {
       "type": "shell",
       "inline": [
+        "sudo hostname i386-build",
+        "mkdir -p /home/vagrant/.ssh",
+        "chmod 700 /home/vagrant/.ssh",
+        "cat /home/vagrant/vagrant-insecure.pub >> /home/vagrant/.ssh/authorized_keys",
+        "chmod 600 /home/vagrant/.ssh/authorized_keys",
+        "rm -f /home/vagrant/vagrant-insecure.pub",
         "sudo apt-get -y update && sudo apt-get -y upgrade",
-        "sudo apt-get install build-essential"
+        "sudo apt-get install build-essential",
+        "sudo mount -o loop /home/vagrant/VBoxGuestAdditions.iso /mnt",
+        "sudo /mnt/VBoxLinuxAdditions.run",
+        "sudo umount /mnt"
         ]
     }
   ],
